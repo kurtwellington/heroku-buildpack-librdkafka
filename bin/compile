@@ -13,7 +13,9 @@ LIBRDKAFKA_SHASUM256=5ad57e0c9a4ec8121e19f13f05bacc41556489dfe8f46ff509af567fdee
 
 BUILD_DIR=$1
 CACHE_DIR=$2
-VENDOR_DIR=${BUILD_DIR}/.heroku/vendor
+VENDOR_DIR=${BUILD_DIR}/.heroku/vendor/${LIBRDKAFKA_DIST}
+VENDOR_RUN_DIR=${VENDOR_DIR/$BUILD_DIR//app}
+PROFILE_PATH=${BUILD_DIR}/.profile.d/librdkafka.sh
 
 if [ -z "${CACHE_DIR}" ]; then
     echo invalid usage - missing cache dir
@@ -22,6 +24,13 @@ fi
 
 mkdir -p $CACHE_DIR
 cd $CACHE_DIR
+
+# remove old, pre-installed librdkafka during this build, it'll be there again once slug is deployed
+if [ -z "${KEEP_LIBRDKAFKA_DPKG}" ]; then
+   set +e
+   apt-get remove -y librdkafka-dev librdkafka1
+   set -e
+fi
 
 # download if needed, dir won't exist in cache if checksum wasn't previously verified
 if [ ! -e $LIBRDKAFKA_DIST ];then
@@ -42,3 +51,11 @@ cd $LIBRDKAFKA_DIST
 ./configure --prefix=${VENDOR_DIR}
 make
 make install
+
+mkdir -p $(dirname $PROFILE_PATH)
+cat > $PROFILE_PATH <<EOF
+export C_INCLUDE_PATH=$VENDOR_RUN_DIR/include:\$C_INCLUDE_PATH
+export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
+export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
+EOF
+chmod 755 $PROFILE_PATH
