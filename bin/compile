@@ -13,7 +13,10 @@ LIBRDKAFKA_SHASUM256=5ad57e0c9a4ec8121e19f13f05bacc41556489dfe8f46ff509af567fdee
 
 BUILD_DIR=$1
 CACHE_DIR=$2
-VENDOR_DIR=${BUILD_DIR}/.heroku/vendor/${LIBRDKAFKA_DIST}
+
+# rely on heroku-buildpack-python to find our libs
+# # https://github.com/heroku/heroku-buildpack-python/blob/0b8741916676f70eb6537aa8da402fbdbe5292c7/bin/compile#L117
+VENDOR_DIR=${BUILD_DIR}/.heroku/vendor
 VENDOR_RUN_DIR=${VENDOR_DIR/$BUILD_DIR//app}
 PROFILE_PATH=${BUILD_DIR}/.profile.d/librdkafka.sh
 
