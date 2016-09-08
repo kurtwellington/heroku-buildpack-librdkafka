@@ -51,7 +51,9 @@ if [ ! -e $LIBRDKAFKA_DIST ];then
 fi
 
 cd $LIBRDKAFKA_DIST
-./configure --prefix=${VENDOR_DIR}
+if [ ! -e Makefile.config ]; then
+   ./configure --prefix=${VENDOR_DIR}
+fi
 make
 make install
 
