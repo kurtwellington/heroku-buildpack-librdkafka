@@ -6,10 +6,10 @@
 
 set -eo pipefail
 
-LIBRDKAFKA_VERSION=0.9.1
+LIBRDKAFKA_VERSION=0.11.3
 LIBRDKAFKA_DIST=librdkafka-${LIBRDKAFKA_VERSION}
 LIBRDKAFKA_DIST_GZ=${LIBRDKAFKA_DIST}.tar.gz
-LIBRDKAFKA_SHASUM256=5ad57e0c9a4ec8121e19f13f05bacc41556489dfe8f46ff509af567fdee98d82
+LIBRDKAFKA_SHASUM256=2b96d7ed71470b0d0027bd9f0b6eb8fb68ed979f8092611c148771eb01abb72c
 
 BUILD_DIR=$1
 CACHE_DIR=$2
@@ -38,7 +38,7 @@ fi
 # download if needed, dir won't exist in cache if checksum wasn't previously verified
 if [ ! -e $LIBRDKAFKA_DIST ];then
     # download
-    curl -Lo ${LIBRDKAFKA_DIST_GZ} https://github.com/edenhill/librdkafka/archive/${LIBRDKAFKA_VERSION}.tar.gz
+    curl -Lo ${LIBRDKAFKA_DIST_GZ} https://github.com/edenhill/librdkafka/archive/v${LIBRDKAFKA_VERSION}.tar.gz
 
     # verify
     echo "${LIBRDKAFKA_SHASUM256}  ${LIBRDKAFKA_DIST_GZ}" | shasum -c -
