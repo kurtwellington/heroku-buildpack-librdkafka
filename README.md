@@ -1,8 +1,14 @@
 # librdkafka buildpack
 
+This buildpack compiles librdkafka for use with [confluent-kafka-python](https://github.com/confluentinc/confluent-kafka-python).
+
 ## Usage
 
-Most likely used with the multi-buildpack.
+Use with [multi-buildpacks](https://devcenter.heroku.com/articles/using-multiple-buildpacks-for-an-app).
 
-  * Set BUILDPACK_URL to your fork of [heroku-buildpack-multi](https://github.com/ddollar/heroku-buildpack-multi.git) (ignore deprecation warning)
-  * Add https://github.com/RealScout/heroku-buildpack-librdkafka.git to the `.buildpacks` file in the root of your project
+  * This buildpack expects that you have at least the heroku standard python buildpack. This buildpack should come first so that librdkafka gets installed before `pip install confluent-kafka` gets run.
+  * Set up like so:
+  ```
+  heroku buildpacks:set https://github.com/MobileWorks/heroku-buildpack-librdkafka.git
+  heroku buildpacks:add https://github.com/heroku/heroku-buildpack-python.git
+  ```
