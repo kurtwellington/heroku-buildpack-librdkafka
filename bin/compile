@@ -35,22 +35,20 @@ if [ -z "${KEEP_LIBRDKAFKA_DPKG}" ]; then
    set -e
 fi
 
-# download if needed, dir won't exist in cache if checksum wasn't previously verified
-if [ ! -e $LIBRDKAFKA_DIST ];then
-    # download
-    curl -Lo ${LIBRDKAFKA_DIST_GZ} https://github.com/edenhill/librdkafka/archive/v${LIBRDKAFKA_VERSION}.tar.gz
+# download
+curl -Lo ${LIBRDKAFKA_DIST_GZ} https://github.com/edenhill/librdkafka/archive/v${LIBRDKAFKA_VERSION}.tar.gz
 
-    # verify
-    echo "${LIBRDKAFKA_SHASUM256}  ${LIBRDKAFKA_DIST_GZ}" | shasum -c -
+# verify
+echo "${LIBRDKAFKA_SHASUM256}  ${LIBRDKAFKA_DIST_GZ}" | shasum -c -
 
-    # extract
-    tar zxf $LIBRDKAFKA_DIST_GZ
+# extract
+tar zxf $LIBRDKAFKA_DIST_GZ
 
-    # clean up
-    rm $LIBRDKAFKA_DIST_GZ
-fi
+# clean up
+rm $LIBRDKAFKA_DIST_GZ
 
 cd $LIBRDKAFKA_DIST
+
 if [ ! -e Makefile.config ]; then
    ./configure --prefix=${VENDOR_DIR}
 fi
@@ -64,3 +62,5 @@ export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
 EOF
 chmod 755 $PROFILE_PATH
+
+rm -rf $CACHE_DIR
